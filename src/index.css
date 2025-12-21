@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap'); */
+
+/* Josy Photography - Premium Editorial Design System */
+
+@layer base {
+  :root {
+    /* Deep charcoal background for cinematic feel */
+    --background: 0 0% 4%;
+    --foreground: 40 20% 92%;
+
+    /* Cards with subtle elevation */
+    --card: 0 0% 6%;
+    --card-foreground: 40 20% 92%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 40 20% 92%;
+
+    /* Champagne gold accent */
+    --primary: 38 60% 65%;
+    --primary-foreground: 0 0% 4%;
+
+    /* Warm cream secondary */
+    --secondary: 35 15% 15%;
+    --secondary-foreground: 40 20% 92%;
+
+    /* Muted tones */
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+
+    /* Accent matching primary */
+    --accent: 38 60% 65%;
+    --accent-foreground: 0 0% 4%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 38 60% 65%;
+
+    --radius: 0.25rem;
+
+    /* Custom properties for enhanced design */
+    --gradient-gold: linear-gradient(135deg, hsl(38 60% 65%), hsl(28 50% 55%));
+    --gradient-dark: linear-gradient(180deg, hsl(0 0% 4%), hsl(0 0% 8%));
+    --gradient-hero: linear-gradient(180deg, transparent 0%, hsl(0 0% 4% / 0.8) 100%);
+    
+    --shadow-glow: 0 0 60px hsl(38 60% 65% / 0.15);
+    --shadow-soft: 0 25px 50px -12px hsl(0 0% 0% / 0.5);
+    
+    --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Typography scale */
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 40 20% 92%;
+    --sidebar-primary: 38 60% 65%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 40 20% 92%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 38 60% 65%;
+  }
+
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 40 20% 92%;
+    --card: 0 0% 6%;
+    --card-foreground: 40 20% 92%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 40 20% 92%;
+    --primary: 38 60% 65%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 35 15% 15%;
+    --secondary-foreground: 40 20% 92%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 38 60% 65%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 38 60% 65%;
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 40 20% 92%;
+    --sidebar-primary: 38 60% 65%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 40 20% 92%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 38 60% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-foreground;
+  }
+}
+
+@layer components {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-gold);
+  }
+
+  .image-reveal {
+    clip-path: inset(0 100% 0 0);
+    animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes reveal {
+    to {
+      clip-path: inset(0 0% 0 0);
+    }
+  }
+
+  .hover-lift {
+    @apply transition-all duration-500;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-soft);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
+  }
+}
+
+
+
+
+
+
+
+
+/* ,,,,,,,,,,,, */
+
+/* Fix any white background on inputs/textarea in dark mode */
+input, textarea {
+  background-color: transparent !important;
+}
+
+/* Extra safety for phone input */
+input[type="tel"] {
+  background-color: transparent !important;
+}
