@@ -47,7 +47,7 @@ const portfolioItems = [
     id: 5,
     title: 'Ethereal Dreams',
     category: 'Fine Art',
-    image: portfolio5,
+    image: portfolio4,
     // image: portfolio6,
   },
 ];
