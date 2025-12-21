@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Instagram, Twitter, Linkedin, ArrowUp } from 'lucide-react';
+import { FaInstagram, FaTwitter, FaFacebookF, FaTiktok, FaArrowUp } from 'react-icons/fa';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -7,9 +7,10 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: FaInstagram, href: '#', label: 'Instagram' },
+    { icon: FaTwitter, href: '#', label: 'Twitter' },
+    { icon: FaFacebookF, href: 'https://web.facebook.com/profile.php?id=100065065669317', label: 'Facebook' },
+    { icon: FaTiktok, href: '#', label: 'TikTok' },
   ];
 
   const footerLinks = [
@@ -73,7 +74,7 @@ const Footer = () => {
               className="w-10 h-10 rounded-full border border-primary bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               aria-label="Back to top"
             >
-              <ArrowUp className="w-4 h-4" />
+              <FaArrowUp className="w-4 h-4" />
             </motion.button>
           </div>
         </div>
@@ -81,7 +82,7 @@ const Footer = () => {
         {/* Bottom Text */}
         <div className="mt-16 pt-8 border-t border-border/50 text-center">
           <p className="font-body text-xs tracking-[0.2em] uppercase text-muted-foreground/50">
-            Crafted with passion in New York City
+            Crafted with passion in Oromia, Ethiopia
           </p>
         </div>
       </div>

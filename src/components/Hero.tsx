@@ -154,7 +154,7 @@ const Hero = ({ fallbackImage }: HeroProps) => {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="font-body text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed"
             >
-              {currentImage?.subtitle || 'Premium photography that transforms fleeting moments into timeless art. Based in New York, working worldwide.'}
+              {currentImage?.subtitle || 'Premium photography that transforms fleeting moments into timeless art. Based in Oromia, Ethiopia, working worldwide.'}
             </motion.p>
           </div>
         </div>

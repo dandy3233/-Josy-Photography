@@ -57,8 +57,8 @@ const Index = () => {
     <>
       <Helmet>
         <title>Josy Photography | Premium Visual Storytelling</title>
-        <meta name="description" content="Josy Photography - Premium photography capturing moments that last. Specializing in editorial, wedding, portrait, and fine art photography. Based in New York, working worldwide." />
-        <meta name="keywords" content="photography, wedding photographer, portrait photography, editorial photography, fine art, New York photographer" />
+        <meta name="description" content="Josy Photography - Premium photography capturing moments that last. Specializing in editorial, wedding, portrait, and fine art photography. Based in Oromia, Ethiopia, working worldwide." />
+        <meta name="keywords" content="photography, wedding photographer, portrait photography, editorial photography, fine art, Oromia, Ethiopia photographer" />
         <meta property="og:title" content="Josy Photography | Premium Visual Storytelling" />
         <meta property="og:description" content="Capturing moments that last. Premium photography for weddings, portraits, and commercial projects." />
         <meta property="og:type" content="website" />

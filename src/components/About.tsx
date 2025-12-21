@@ -5,15 +5,33 @@ interface AboutProps {
   aboutImage: string;
 }
 
+interface AboutData {
+  title: string;
+  name: string;
+  description: string[];
+  stats: { value: string; label: string }[];
+  location: string;
+}
+
+const aboutJson: AboutData = {
+  title: "About Me",
+  name: "Josy Photography (Josy Chala)",
+  description: [
+    "I believe that photography is more than capturing images—it's about preserving emotions, telling stories, and creating art that resonates with the soul.",
+    "With over a decade of experience in editorial, fashion, and portrait photography, I've had the privilege of working with renowned brands and individuals across the globe. My approach combines technical precision with artistic intuition, ensuring every shot tells a compelling story.",
+    "Based in Oromia, Ethiopia, I travel worldwide for projects that inspire and challenge me. When I'm not behind the lens, you'll find me exploring galleries, studying light, and seeking the next beautiful moment."
+  ],
+  stats: [
+    { value: "2+", label: "Years Experience" },
+    { value: "50+", label: "Projects Completed" },
+    { value: "25+", label: "Awards Won" }
+  ],
+  location: "Oromia, Ethiopia"
+};
+
 const About = ({ aboutImage }: AboutProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const stats = [
-    { value: '12+', label: 'Years Experience' },
-    { value: '500+', label: 'Projects Completed' },
-    { value: '50+', label: 'Awards Won' },
-  ];
 
   return (
     <section
@@ -34,7 +52,7 @@ const About = ({ aboutImage }: AboutProps) => {
             <div className="relative aspect-[4/5] overflow-hidden">
               <img
                 src={aboutImage}
-                alt="Josy - Professional Photographer"
+                alt={aboutJson.name}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -56,10 +74,10 @@ const About = ({ aboutImage }: AboutProps) => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <p className="text-primary font-body text-xs sm:text-sm tracking-[0.3em] uppercase mb-4">
-                About Me
+                {aboutJson.title}
               </p>
               <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-foreground mb-8">
-                Josy Martinez
+                {aboutJson.name}
               </h2>
             </motion.div>
 
@@ -69,23 +87,14 @@ const About = ({ aboutImage }: AboutProps) => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="space-y-6 mb-12"
             >
-              <p className="font-body text-base sm:text-lg text-muted-foreground leading-relaxed">
-                I believe that photography is more than capturing images—it's about 
-                preserving emotions, telling stories, and creating art that resonates 
-                with the soul.
-              </p>
-              <p className="font-body text-sm sm:text-base text-muted-foreground leading-relaxed">
-                With over a decade of experience in editorial, fashion, and portrait 
-                photography, I've had the privilege of working with renowned brands 
-                and individuals across the globe. My approach combines technical 
-                precision with artistic intuition, ensuring every shot tells a 
-                compelling story.
-              </p>
-              <p className="font-body text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Based in New York City, I travel worldwide for projects that inspire 
-                and challenge me. When I'm not behind the lens, you'll find me 
-                exploring galleries, studying light, and seeking the next beautiful moment.
-              </p>
+              {aboutJson.description.map((paragraph, index) => (
+                <p
+                  key={index}
+                  className="font-body text-base sm:text-lg text-muted-foreground leading-relaxed"
+                >
+                  {paragraph}
+                </p>
+              ))}
             </motion.div>
 
             {/* Stats */}
@@ -95,7 +104,7 @@ const About = ({ aboutImage }: AboutProps) => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8 border-t border-border"
             >
-              {stats.map((stat, index) => (
+              {aboutJson.stats.map((stat, index) => (
                 <div key={index} className="text-center lg:text-left">
                   <p className="font-display text-2xl sm:text-3xl lg:text-4xl text-primary mb-1">
                     {stat.value}
@@ -106,8 +115,17 @@ const About = ({ aboutImage }: AboutProps) => {
                 </div>
               ))}
             </motion.div>
-          </div>
 
+            {/* Location Text */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="mt-6 text-xs text-muted-foreground font-body tracking-[0.3em] uppercase"
+            >
+              {aboutJson.location}
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
