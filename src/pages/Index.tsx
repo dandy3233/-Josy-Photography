@@ -5,6 +5,7 @@ import Portfolio from '@/components/Portfolio';
 import About from '@/components/About';
 import Services from '@/components/Services';
 import Testimonials from '@/components/Testimonials';
+import PopularWorks from '@/components/PopularWorks';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
@@ -17,6 +18,7 @@ import portfolio3 from '@/assets/portfolio-3.jpg';
 import portfolio4 from '@/assets/portfolio-4.jpg';
 import portfolio5 from '@/assets/portfolio-5.jpg';
 import portfolio6 from '@/assets/portfolio-5.png';
+import { i } from 'node_modules/framer-motion/dist/types.d-DagZKalS';
 
 const portfolioItems = [
   {
@@ -69,8 +71,10 @@ const Index = () => {
       
       <main>
         <Hero fallbackImage={heroImage} />
-        <Portfolio items={portfolioItems} />
+        {/* <Portfolio items={portfolioItems} /> */}
+        <Portfolio />
         <About aboutImage={aboutImage} />
+        <PopularWorks />
         <Services />
         <Testimonials />
         <Contact />

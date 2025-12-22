@@ -5,124 +5,175 @@ import { ArrowUpRight } from 'lucide-react';
 interface PortfolioItem {
   id: number;
   title: string;
-  category: string;
-  image: string;
+  link: string;
+  image1: string;
+  image2: string;
 }
 
-interface PortfolioProps {
-  items: PortfolioItem[];
-}
+const items: PortfolioItem[] = [
+  {
+    id: 1,
+    title: 'Wedding',
+    link: 'https://anjelopictures.com/wedding/',
+    image1: 'https://i0.wp.com/thewplmag.com/wp-content/uploads/2024/04/KarimahGheddai0030.jpg?resize=900%2C660&ssl=1',
+    image2: 'https://jennygg.com/wp-content/uploads/2015/06/HJblog-1-940x627.jpg',
+  },
+  {
+    id: 2,
+    title: 'Mels',
+    link: 'https://anjelopictures.com/mels/',
+    image1: 'https://www.judahavenue.com/wp-content/uploads/2018/07/27-49018-post/aida-betre-wedding-at-falls-church-marriott-fairview-park-in-virginia-1-1.jpg',
+    image2: 'https://lookaside.instagram.com/seo/google_widget/crawler/?media_id=3368375372686140246',
+  },
+  {
+    id: 3,
+    title: 'Genfo',
+    link: 'https://anjelopictures.com/genfo/',
+    image1: 'https://thumbs.dreamstime.com/b/cultural-food-ethiopia-s-called-genfo-its-152731942.jpg',
+    image2: 'https://www.willflyforfood.net/wp-content/uploads/2021/09/ethiopian-food-featured.jpg',
+  },
+  {
+    id: 4,
+    title: 'Bridal Shower',
+    link: 'https://anjelopictures.com/bridal-shower/',
+    image1: 'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=2140144899370059',
+    image2: 'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=3423273927716563',
+  },
+  {
+    id: 5,
+    title: 'Maternity',
+    link: 'https://anjelopictures.com/maternity/',
+    image1: 'http://static1.squarespace.com/static/52eeeae9e4b04af4cf9542bb/52eeee86e4b02c6bcd879e87/5d01189167787f000110fcd1/1565966348209/atlanta-roswell-acworth-sandy-springs-buckhead-virginia-highlands-west-end-decatur-lily-sophia-photography-ethiopian-couple-studio-couples-maternity-session-expecting-baby-boy-family-photos_1066.jpg?format=1500w',
+    image2: 'https://boyophoto.ca/wp-content/uploads/2018/07/001-ottawa-maternity-photographer-studio2.jpg',
+  },
+  {
+    id: 6,
+    title: 'Kids',
+    link: 'https://anjelopictures.com/kids/',
+    image1: 'https://natalydanilova.com/wp-content/uploads/2025/03/DSC00824.jpg',
+    image2: 'https://lookaside.instagram.com/seo/google_widget/crawler/?media_id=2888844952630177811',
+  },
+  {
+    id: 7,
+    title: 'Kiristina',
+    link: 'https://anjelopictures.com/kirisitna/',
+    image1: 'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=1100157168142341',
+    image2: 'https://mir-s3-cdn-cf.behance.net/project_modules/max_632_webp/65979413329837.562728acef12a.jpg',
+  },
+  {
+    id: 8,
+    title: 'Family',
+    link: 'https://anjelopictures.com/family/',
+    image1: 'https://arpasiphotography.com/wp-content/uploads/2022/03/Howard_County_Family_photographer_0011.jpg',
+    image2: 'https://arpasiphotography.com/wp-content/uploads/2020/12/Mekonen_Abdi_family-39-1024x683.jpg',
+  },
+];
 
-const Portfolio = ({ items }: PortfolioProps) => {
+const Portfolio = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const [hoveredImage, setHoveredImage] = useState<string | null>(null);
 
   return (
-    <section id="portfolio" className="py-32 bg-background" ref={ref}>
+    <section id="portfolio" className="py-24 lg:py-32 bg-background" ref={ref}>
       <div className="container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-20"
+          className="mb-16 lg:mb-24 text-center"
         >
           <p className="text-primary font-body text-sm tracking-[0.3em] uppercase mb-4">
-            Selected Work
+            Our Galleries
           </p>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground">
-            Portfolio
+            Explore Our Work
           </h2>
         </motion.div>
 
-        {/* Portfolio Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          {items.map((item, index) => (
-            <motion.article
-              key={item.id}
-              initial={{ opacity: 0, y: 60 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.15 }}
-              className={`group relative ${index % 3 === 0 ? 'md:col-span-2' : ''}`}
-              onMouseEnter={() => setHoveredId(item.id)}
-              onMouseLeave={() => setHoveredId(null)}
-            >
-              <a href="#" className="block relative overflow-hidden">
-                {/* Image Container */}
-                <div className={`relative overflow-hidden ${index % 3 === 0 ? 'aspect-[16/9]' : 'aspect-[4/5]'}`}>
-                  <motion.img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                    animate={{
-                      scale: hoveredId === item.id ? 1.05 : 1,
-                    }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  />
-                  {/* Overlay */}
-                  <motion.div
-                    className="absolute inset-0 bg-background/60"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: hoveredId === item.id ? 1 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
+        {/* Alternating Layout with Dual Images Side-by-Side */}
+        <div className="space-y-14 lg:space-y-12">
+          {items.map((item, index) => {
+            const isEven = index % 2 === 0;
 
-                {/* Content Overlay */}
-                <div className="absolute inset-0 flex flex-col justify-end p-6 lg:p-10">
-                  <div className="flex items-end justify-between">
-                    <div>
-                      <motion.p
-                        className="text-primary/80 font-body text-xs tracking-[0.2em] uppercase mb-2"
-                        animate={{ 
-                          y: hoveredId === item.id ? 0 : 10,
-                          opacity: hoveredId === item.id ? 1 : 0.7 
-                        }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {item.category}
-                      </motion.p>
-                      <motion.h3
-                        className="font-display text-2xl lg:text-3xl text-foreground"
-                        animate={{ y: hoveredId === item.id ? 0 : 10 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {item.title}
-                      </motion.h3>
+            return (
+              <motion.article
+                key={item.id}
+                initial={{ opacity: 0, y: 60 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center"
+              >
+                {/* Dual Images Section */}
+                <div className={isEven ? 'order-1' : 'order-1 lg:order-2'}>
+                  <a href={item.link} className="block">
+                    <div className="grid grid-cols-2 gap-0 overflow-hidden  shadow-2xl relative">
+                      {/* First Image */}
+                      <div className="relative overflow-hidden">
+                        <motion.img
+                          src={item.image1}
+                          alt={`${item.title} - Anjelo Pictures`}
+                          className="w-full h-full lg:h-[30rem] object-cover aspect-square"
+                          animate={{
+                            scale: hoveredImage === item.image1 ? 1.12 : 1,
+                          }}
+                          transition={{ duration: 0.7, ease: 'easeOut' }}
+                          onMouseEnter={() => setHoveredImage(item.image1)}
+                          onMouseLeave={() => setHoveredImage(null)}
+                        />
+                        <motion.div
+                          className="absolute inset-0 bg-black/40 pointer-events-none"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: hoveredImage === item.image1 ? 1 : 0 }}
+                          transition={{ duration: 0.4 }}
+                        />
+                      </div>
+
+                      {/* Second Image */}
+                      <div className="relative overflow-hidden">
+                        <motion.img
+                          src={item.image2}
+                          alt={`${item.title} - Anjelo Pictures`}
+                          className="w-full h-full lg:h-[30rem] object-cover aspect-square"
+                          animate={{
+                            scale: hoveredImage === item.image2 ? 1.12 : 1,
+                          }}
+                          transition={{ duration: 0.7, ease: 'easeOut' }}
+                          onMouseEnter={() => setHoveredImage(item.image2)}
+                          onMouseLeave={() => setHoveredImage(null)}
+                        />
+                        <motion.div
+                          className="absolute inset-0 bg-black/40 pointer-events-none"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: hoveredImage === item.image2 ? 1 : 0 }}
+                          transition={{ duration: 0.4 }}
+                        />
+                      </div>
                     </div>
-                    <motion.div
-                      animate={{ 
-                        opacity: hoveredId === item.id ? 1 : 0,
-                        x: hoveredId === item.id ? 0 : -10 
-                      }}
-                      transition={{ duration: 0.3 }}
-                      className="w-12 h-12 rounded-full border border-primary flex items-center justify-center"
-                    >
-                      <ArrowUpRight className="w-5 h-5 text-primary" />
-                    </motion.div>
-                  </div>
+                  </a>
                 </div>
-              </a>
-            </motion.article>
-          ))}
-        </div>
 
-        {/* View All Link */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16 text-center"
-        >
-          <a
-            href="/galleries"
-            className="group inline-flex items-center gap-3 font-body text-sm tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            View All Projects
-            <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-          </a>
-        </motion.div>
+                {/* Text Section */}
+                <div className={isEven ? 'order-2 text-left   lg:text-center' : 'order-2 lg:order-1 text-left lg:text-center '}>
+                  <motion.h3
+                    className="font-display font-extrabold  text-4xl lg:text-6xl text-foreground mb-6"
+                    onMouseEnter={() => setHoveredImage(null)} // optional: reset hover when on text
+                  >
+                    {item.title}
+                  </motion.h3>
+                  <motion.a
+                    href={item.link}
+                    className="inline-flex items-center gap-3 font-body text-lg tracking-wide text-primary hover:text-primary/80 transition-colors"
+                  >
+                    View Gallery
+                    <ArrowUpRight className="w-5 h-5" />
+                  </motion.a>
+                </div>
+              </motion.article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Calendar } from 'lucide-react';
 
 import Logo from "@/assets/Logo1.png";
 
@@ -24,6 +24,17 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleNavClick = (href: string) => {
+    setIsOpen(false);
+    if (href.startsWith('/#')) {
+      const sectionId = href.replace('/#', '');
+      if (location.pathname === '/') {
+        const element = document.getElementById(sectionId);
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <>
       <motion.header
@@ -37,21 +48,14 @@ const Navigation = () => {
         <nav className="container mx-auto px-6 lg:px-12 py-6">
           <div className="flex items-center justify-between">
             {/* Logo */}
-
-<a href="/" className="group relative flex items-center gap-3">
-  <img
-    src={Logo}
-    alt="Josy Photography Logo"
-    className="h-14 w-auto object-contain"
-  />
-
-  {/* <span className="font-display text-2xl tracking-wide text-foreground">
-    Josy Photography
-  </span> */}
-
-  <span className="absolute -bottom-1 left-0 h-[1px] w-0 bg-primary transition-all duration-500 group-hover:w-full" />
-</a>
-
+            <a href="/" className="group relative flex items-center gap-3">
+              <img
+                src={Logo}
+                alt="Josy Photography Logo"
+                className="h-14 w-auto object-contain"
+              />
+              <span className="absolute -bottom-1 left-0 h-[1px] w-0 bg-primary transition-all duration-500 group-hover:w-full" />
+            </a>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-12">
@@ -68,6 +72,32 @@ const Navigation = () => {
                   <span className="absolute -bottom-1 left-0 h-[1px] w-0 bg-primary transition-all duration-300 group-hover:w-full" />
                 </motion.a>
               ))}
+
+              {/* Modern Advanced Book Now Button in Header */}
+              <motion.a
+                href="/booking"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="group relative overflow-hidden px-8 py-3.5 bg-primary text-primary-foreground font-body text-sm tracking-widest uppercase rounded-full shadow-lg hover:shadow-2xl transition-all duration-500"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Book Now
+                  <Calendar className="w-4 h-4" />
+                </span>
+                <motion.div
+                  className="absolute inset-0 bg-foreground"
+                  initial={{ x: '100%' }}
+                  whileHover={{ x: '0%' }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                />
+                <motion.div
+                  className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-20"
+                  initial={{ scale: 0.8 }}
+                  whileHover={{ scale: 1.2 }}
+                  transition={{ duration: 0.6 }}
+                />
+              </motion.a>
             </div>
 
             {/* Mobile Menu Button */}
@@ -94,9 +124,15 @@ const Navigation = () => {
           >
             <div className="container mx-auto px-6 py-6">
               <div className="flex justify-between items-center">
-                <span className="font-display text-2xl tracking-wide text-foreground">
-                  Josy
-                </span>
+                {/* Logo */}
+            <a href="/" className="group relative flex items-center gap-3">
+              <img
+                src={Logo}
+                alt="Josy Photography Logo"
+                className="h-14 w-auto object-contain"
+              />
+              <span className="absolute -bottom-1 left-0 h-[1px] w-0 bg-primary transition-all duration-500 group-hover:w-full" />
+            </a>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 text-foreground"
@@ -126,6 +162,15 @@ const Navigation = () => {
                   {link.name}
                 </motion.a>
               ))}
+
+              {/* Mobile Book Now Button */}
+              <motion.a
+                href="/booking"
+                className="mt-8 px-10 py-4 bg-primary text-primary-foreground rounded-full text-lg font-body tracking-wider uppercase shadow-2xl"
+                whileTap={{ scale: 0.95 }}
+              >
+                Book Now
+              </motion.a>
             </motion.div>
           </motion.div>
         )}
