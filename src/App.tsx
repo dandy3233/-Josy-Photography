@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import GalleryList from "./pages/GalleryList";
 import GalleryDetail from "./pages/GalleryDetail";
+import CategoryGallery from "./pages/CategoryGallery";
 import Booking from "./pages/Booking";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Galleries from "./pages/admin/Galleries";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/galleries" element={<GalleryList />} />
             <Route path="/gallery/:id" element={<GalleryDetail />} />
+            <Route path="/gallery/category/:category" element={<CategoryGallery />} />
             <Route path="/booking" element={<Booking />} />
             <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/hero-images" element={<ProtectedRoute requireAdmin><HeroImages /></ProtectedRoute>} />

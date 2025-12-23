@@ -172,13 +172,13 @@ const PopularWorks = () => {
           className="mb-16 lg:mb-24 text-center"
         >
           <p className="text-primary font-body text-sm tracking-[0.3em] uppercase mb-4">
-            Your memory with Anjelo Pictures
+            Your memory with Josy Photography
           </p>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground">
             Popular Works
           </h2>
           <p className="mt-8 max-w-3xl mx-auto text-muted-foreground text-lg">
-            Our journey began with a vision to redefine photography, blending technical expertise with an artistic touch. Meet the faces behind the lens – a team of seasoned professionals driven by a shared commitment to transform your special moments into timeless memories. Learn more about our story and what sets Anjelo Pictures apart.
+            Our journey began with a vision to redefine photography, blending technical expertise with an artistic touch. Meet the faces behind the lens – a team of seasoned professionals driven by a shared commitment to transform your special moments into timeless memories. Learn more about our story and what sets Josy Photography apart.
           </p>
         </motion.div>
 
@@ -196,7 +196,7 @@ const PopularWorks = () => {
               >
                 <img
                   src={src}
-                  alt={`Popular work ${index + 1} - Anjelo Pictures`}
+                  alt={`Popular work ${index + 1} - Josy Photography `}
                   className="w-full object-cover transition-transform duration-700 group-hover:scale-110"
                   loading="lazy"
                 />
