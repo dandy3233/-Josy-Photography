@@ -17,10 +17,14 @@ export type Database = {
       bookings: {
         Row: {
           booking_date: string
+          client_email: string | null
           client_id: string | null
+          client_name: string | null
+          client_phone: string | null
           created_at: string
           id: string
           notes: string | null
+          preferred_location: string | null
           service_id: string | null
           status: string | null
           total_amount: number | null
@@ -28,10 +32,14 @@ export type Database = {
         }
         Insert: {
           booking_date: string
+          client_email?: string | null
           client_id?: string | null
+          client_name?: string | null
+          client_phone?: string | null
           created_at?: string
           id?: string
           notes?: string | null
+          preferred_location?: string | null
           service_id?: string | null
           status?: string | null
           total_amount?: number | null
@@ -39,10 +47,14 @@ export type Database = {
         }
         Update: {
           booking_date?: string
+          client_email?: string | null
           client_id?: string | null
+          client_name?: string | null
+          client_phone?: string | null
           created_at?: string
           id?: string
           notes?: string | null
+          preferred_location?: string | null
           service_id?: string | null
           status?: string | null
           total_amount?: number | null
@@ -100,6 +112,7 @@ export type Database = {
       }
       galleries: {
         Row: {
+          category: string | null
           cover_image: string | null
           created_at: string
           description: string | null
@@ -110,6 +123,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string | null
           cover_image?: string | null
           created_at?: string
           description?: string | null
@@ -120,6 +134,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string | null
           cover_image?: string | null
           created_at?: string
           description?: string | null

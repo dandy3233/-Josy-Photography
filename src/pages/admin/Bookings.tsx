@@ -19,6 +19,10 @@ interface Booking {
   notes: string | null;
   client_id: string | null;
   service_id: string | null;
+  client_name: string | null;
+  client_email: string | null;
+  client_phone: string | null;
+  preferred_location: string | null;
   created_at: string;
 }
 
@@ -262,15 +266,20 @@ const BookingsPage = () => {
                       <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
                         <Calendar className="h-6 w-6 text-primary" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <h3 className="font-medium text-foreground">
                           {new Date(booking.booking_date).toLocaleDateString('en-US', {
                             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
                           })}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {booking.client_id ? getClientName(booking.client_id) : 'No client'} • {booking.service_id ? getServiceTitle(booking.service_id) : 'No service'}
+                          {booking.client_name || 'No client'} • {booking.service_id ? getServiceTitle(booking.service_id) : 'No service'}
                         </p>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-xs text-muted-foreground">
+                          {booking.client_email && <span>📧 {booking.client_email}</span>}
+                          {booking.client_phone && <span>📞 {booking.client_phone}</span>}
+                          {booking.preferred_location && <span>📍 {booking.preferred_location}</span>}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
