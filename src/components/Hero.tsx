@@ -36,13 +36,12 @@ const Hero = ({ fallbackImage }: HeroProps) => {
     setLoading(false);
   };
 
-  // Auto-slide every 5 seconds
   useEffect(() => {
     if (images.length <= 1) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 5000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, [images.length]);
@@ -64,80 +63,81 @@ const Hero = ({ fallbackImage }: HeroProps) => {
 
   if (loading) {
     return (
-      <section className="relative h-screen w-full overflow-hidden bg-background">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        </div>
+      <section className="relative h-screen w-full bg-background flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </section>
     );
   }
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Images */}
+      {/* Background Image */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
-          initial={{ opacity: 0, scale: 1.1 }}
+          initial={{ opacity: 0, scale: 1.15 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="absolute inset-0"
         >
-          {displayImage && (
+          {displayImage ? (
             <img
               src={displayImage}
-              alt={currentImage?.title || 'Josy Photography - Visual Storytelling'}
-              className="w-full h-full object-cover"
+              alt={currentImage?.title || 'Josy Photography Hero'}
+              className="w-full h-full object-cover object-center"
+              loading="eager"
             />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-muted to-background" />
           )}
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
-          <div className="absolute inset-0 bg-background/30" />
+
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70" />
+          <div className="absolute inset-0 bg-black/20" />
         </motion.div>
       </AnimatePresence>
 
-      {/* Slide Navigation Arrows */}
+      {/* Navigation Arrows */}
       {images.length > 1 && (
         <>
           <button
             onClick={goToPrev}
-            className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-background/20 backdrop-blur-sm border border-border/30 text-foreground/80 hover:bg-background/40 hover:text-foreground transition-all duration-300"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:scale-110 transition-all duration-300"
             aria-label="Previous slide"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
           </button>
           <button
             onClick={goToNext}
-            className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-background/20 backdrop-blur-sm border border-border/30 text-foreground/80 hover:bg-background/40 hover:text-foreground transition-all duration-300"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:scale-110 transition-all duration-300"
             aria-label="Next slide"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
           </button>
         </>
       )}
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex flex-col justify-end pb-24 lg:pb-32">
-        <div className="container mx-auto px-6 lg:px-12">
+      {/* Main Content - Less overloaded, more breathing room */}
+      <div className="relative z-10 h-full flex flex-col justify-end py-20 sm:py-24 md:py-28 lg:py-32 xl:py-36">
+        <div className="container mx-auto px-6 sm:px-8 md:px-12 lg:px-20">
           <div className="max-w-4xl">
-            {/* Tagline */}
+            {/* Tagline - Slightly smaller on mobile */}
             <motion.p
               key={`tagline-${currentIndex}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-primary font-body text-sm tracking-[0.3em] uppercase mb-6"
+              className="text-primary font-body text-xs sm:text-sm tracking-[0.4em] uppercase mb-4 sm:mb-6"
             >
               {currentImage?.title || 'Visual Storytelling'}
             </motion.p>
 
-            {/* Main Heading */}
+            {/* Main Heading - Smoother scaling, less aggressive */}
             <motion.h1
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-display text-5xl md:text-7xl lg:text-8xl text-foreground leading-[0.95] mb-8"
+              className="font-display text-4xl sm:text-5xl md:text-4xl lg:text-7xl xl:text-8xl leading-[0.92] text-white drop-shadow-2xl mb-6 md:mb-8"
             >
               Capturing
               <br />
@@ -146,15 +146,16 @@ const Hero = ({ fallbackImage }: HeroProps) => {
               That Last
             </motion.h1>
 
-            {/* Subtitle */}
+            {/* Subtitle - Reduced size on smaller screens */}
             <motion.p
               key={`subtitle-${currentIndex}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="font-body text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed"
+              className="font-body text-base sm:text-lg md:text-xl text-white/90 max-w-xl leading-relaxed drop-shadow-md"
             >
-              {currentImage?.subtitle || 'Premium photography that transforms fleeting moments into timeless art. Based in Oromia, Ethiopia, working worldwide.'}
+              {currentImage?.subtitle ||
+                'Premium photography that transforms fleeting moments into timeless art. Based in Oromia, Ethiopia, working worldwide.'}
             </motion.p>
           </div>
         </div>
@@ -167,10 +168,10 @@ const Hero = ({ fallbackImage }: HeroProps) => {
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              className={`h-1.5 rounded-full transition-all duration-500 ${
                 index === currentIndex
-                  ? 'w-8 bg-primary'
-                  : 'bg-foreground/30 hover:bg-foreground/50'
+                  ? 'w-10 bg-primary'
+                  : 'w-3 bg-white/50 hover:bg-white/80'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -178,34 +179,32 @@ const Hero = ({ fallbackImage }: HeroProps) => {
         </div>
       )}
 
-      {/* Scroll Indicator - only show when no indicators */}
-      {images.length <= 1 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.5 }}
+        className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-20"
+      >
+        <motion.a
+          href="#portfolio"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="flex flex-col items-center gap-3 text-white/70 hover:text-primary transition-colors"
         >
-          <motion.a
-            href="#portfolio"
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            <span className="text-xs tracking-[0.2em] uppercase font-body">Scroll</span>
-            <ArrowDown className="w-4 h-4" />
-          </motion.a>
-        </motion.div>
-      )}
+          <span className="text-xs sm:text-sm tracking-widest uppercase font-light">Scroll to Explore</span>
+          <ArrowDown className="w-5 h-5 sm:w-6 sm:h-6" />
+        </motion.a>
+      </motion.div>
 
       {/* Side Text */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1 }}
-        className="hidden lg:block absolute right-12 top-1/2 -translate-y-1/2"
+        transition={{ duration: 1, delay: 1.2 }}
+        className="hidden xl:block absolute right-8 top-1/2 -translate-y-1/2"
       >
-        <p className="font-body text-xs tracking-[0.3em] uppercase text-muted-foreground [writing-mode:vertical-lr] rotate-180">
+        <p className="text-white/60 font-body text-xs tracking-[0.4em] uppercase [writing-mode:vertical-lr] rotate-180">
           Est. 2018 — Oromia, Ethiopia
         </p>
       </motion.div>

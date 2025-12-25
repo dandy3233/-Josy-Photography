@@ -180,7 +180,6 @@
 // };
 
 // export default Portfolio;
-
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
@@ -188,7 +187,7 @@ import { ArrowUpRight } from 'lucide-react';
 interface PortfolioItem {
   id: number;
   title: string;
-  link: string; // You can change these to your actual gallery links later
+  link: string;
   image1: string;
   image2: string;
 }
@@ -206,7 +205,7 @@ const items: PortfolioItem[] = [
     title: 'Mels',
     link: '/gallery/category/Mels',
     image1: 'https://www.judahavenue.com/wp-content/uploads/2018/07/27-49018-post/aida-betre-wedding-at-falls-church-marriott-fairview-park-in-virginia-1-1.jpg',
-    image2: 'https://lookaside.instagram.com/seo/google_widget/crawler/?media_id=3769406366629576457', // fallback – but this one works in many cases
+    image2: 'https://lookaside.instagram.com/seo/google_widget/crawler/?media_id=3769406366629576457',
   },
   {
     id: 3,
@@ -275,8 +274,8 @@ const Portfolio = () => {
           </h2>
         </motion.div>
 
-        {/* Alternating Layout with Dual Images Side-by-Side */}
-        <div className="space-y-14 lg:space-y-24">
+        {/* Alternating Layout */}
+        <div className="space-y-20 lg:space-y-32">
           {items.map((item, index) => {
             const isEven = index % 2 === 0;
 
@@ -286,18 +285,18 @@ const Portfolio = () => {
                 initial={{ opacity: 0, y: 60 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center"
+                className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center"
               >
-                {/* Dual Images Section */}
-                <div className={isEven ? 'order-1' : 'order-1 lg:order-2'}>
+                {/* Images Section */}
+                <div className={isEven ? 'order-1' : 'order-1 md:order-2'}>
                   <a href={item.link} className="block">
-                    <div className="grid grid-cols-2 gap-0 overflow-hidden shadow-2xl">
-                      {/* First Image */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-0 overflow-hidden shadow-2xl rounded-none">
+                      {/* First Image – Always visible */}
                       <div className="relative overflow-hidden">
                         <motion.img
                           src={item.image1}
                           alt={`${item.title} photography`}
-                          className="w-full h-full lg:h-[30rem] object-cover aspect-square"
+                          className="w-full h-[20rem] sm:h-[26rem] md:h-[28rem] lg:h-[32rem] object-cover"
                           animate={{
                             scale: hoveredImage === item.image1 ? 1.12 : 1,
                           }}
@@ -313,12 +312,12 @@ const Portfolio = () => {
                         />
                       </div>
 
-                      {/* Second Image */}
-                      <div className="relative overflow-hidden">
+                      {/* Second Image – Hidden on sm, shown on md+ */}
+                      <div className="relative overflow-hidden hidden md:block">
                         <motion.img
                           src={item.image2}
                           alt={`${item.title} photography`}
-                          className="w-full h-full lg:h-[30rem] object-cover aspect-square"
+                          className="w-full h-[20rem] sm:h-[26rem] md:h-[28rem] lg:h-[32rem] object-cover"
                           animate={{
                             scale: hoveredImage === item.image2 ? 1.12 : 1,
                           }}
@@ -338,10 +337,10 @@ const Portfolio = () => {
                 </div>
 
                 {/* Text Section */}
-                <div className={isEven ? 'order-2 text-left   lg:text-center' : 'order-2 lg:order-1 text-left lg:text-center '}>
+                <div className={`${isEven ? 'order-2' : 'order-2 md:order-1'} text-center md:text-left`}>
                   <motion.h3
-                    className="font-display font-extrabold  text-4xl lg:text-6xl text-foreground mb-6"
-                    onMouseEnter={() => setHoveredImage(null)} // optional: reset hover when on text
+                    className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-foreground mb-6"
+                    onMouseEnter={() => setHoveredImage(null)}
                   >
                     {item.title}
                   </motion.h3>
