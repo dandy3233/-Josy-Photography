@@ -62,7 +62,7 @@ const About = ({ aboutImage }: AboutProps) => {
               initial={{ scale: 0 }}
               animate={isInView ? { scale: 1 } : {}}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="absolute -bottom-6 -right-6 sm:-bottom-8 sm:-right-8 w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 border border-primary/30"
+              className="absolute -bottom-6  sm:-bottom-8 sm:-right-8 w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 border border-primary/30"
             />
           </motion.div>
 

@@ -1,5 +1,4 @@
 // src/components/Contact.tsx or src/sections/Contact.tsx
-import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Send, MapPin, Mail, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -7,11 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Contact = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Controlled phone input for +251 format
   const [phoneInput, setPhoneInput] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,7 +21,6 @@ const Contact = () => {
     const fullPhone = phoneInput ? `+251${phoneInput.replace(/\D/g, '')}` : null;
 
     try {
-      // Check if client exists
       const { data: existingClient } = await supabase
         .from('clients')
         .select('id')
@@ -33,25 +28,18 @@ const Contact = () => {
         .maybeSingle();
 
       if (existingClient) {
-        // Update existing client
         const { error } = await supabase
           .from('clients')
-          .update({
-            phone: fullPhone,
-            notes: message, // Overwrite or append as needed
-          })
+          .update({ phone: fullPhone, notes: message })
           .eq('id', existingClient.id);
-
         if (error) throw error;
       } else {
-        // Create new client
         const { error } = await supabase.from('clients').insert({
           name,
           email,
           phone: fullPhone,
           notes: message,
         });
-
         if (error) throw error;
       }
 
@@ -60,18 +48,12 @@ const Contact = () => {
         description: "Thank you! I'll respond within 24 hours.",
       });
 
-      // Reset form
       (e.target as HTMLFormElement).reset();
       setPhoneInput('');
-    } catch (error: unknown) {
-      const description =
-        error instanceof Error
-          ? error.message
-          : String(error) || 'Please try again or contact me directly.';
-
+    } catch (error: any) {
       toast({
         title: 'Failed to Send',
-        description,
+        description: error.message || 'Please try again or contact me directly.',
         variant: 'destructive',
       });
     } finally {
@@ -101,71 +83,57 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-20 md:py-32 bg-background" ref={ref}>
-      <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-          {/* Left: Info & Map (Desktop) */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9 }}
-            className="order-2 lg:order-1"
-          >
-            <p className="text-primary font-medium text-sm tracking-widest uppercase mb-4">
+    <section id="contact" className="py-16 sm:py-20 md:py-28 lg:py-32 bg-background" ref={ref}>
+      <div className="container mx-auto px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 max-w-7xl">
+        {/* Two-column layout from md+ */}
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-16 xl:gap-24 items-start">
+          {/* Left: Info + Map (hidden on mobile) */}
+          <div className="hidden md:block">
+            <p className="text-primary font-body text-xs sm:text-sm tracking-[0.4em] uppercase mb-4">
               Get In Touch
             </p>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-tight mb-8">
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6 md:mb-8">
               Let's Create
               <br />
               <span className="italic text-primary">Together</span>
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-12 max-w-lg">
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed mb-10 md:mb-12 max-w-lg">
               Ready to capture your story? Whether it's a wedding, family portrait, or creative shoot — 
               I'm here to bring your vision to life. Drop me a message!
             </p>
 
-            {/* Contact Info Cards */}
-            <div className="space-y-8 mb-12">
-              {contactDetails.map((item, index) => (
-                <motion.a
-                  key={index}
+            {/* Contact Info */}
+            <div className="space-y-8 mb-12 lg:mb-16">
+              {contactDetails.map((item) => (
+                <a
+                  key={item.label}
                   href={item.href}
-                  target={item.href?.startsWith('mailto') || item.href?.startsWith('tel') ? '_self' : '_blank'}
-                  rel={item.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
                   className="flex items-start gap-5 group"
                 >
-                  <div className="w-14 h-14 rounded-full border border-border flex items-center justify-center flex-shrink-0 group-hover:border-primary transition-colors">
-                    <item.icon className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full border border-border flex items-center justify-center flex-shrink-0 group-hover:border-primary transition-colors duration-300">
+                    <item.icon className="w-5 h-5 sm:w-6 lg:w-7 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs tracking-widest uppercase text-muted-foreground mb-1">
+                    <p className="text-xs sm:text-sm tracking-widest uppercase text-muted-foreground mb-1">
                       {item.label}
                     </p>
-                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                    <p className="font-medium text-foreground group-hover:text-primary transition-colors text-base lg:text-lg">
                       {item.value}
                     </p>
                     {item.subtitle && (
-                      <p className="text-sm text-muted-foreground mt-1">{item.subtitle}</p>
+                      <p className="text-sm lg:text-base text-muted-foreground mt-1">{item.subtitle}</p>
                     )}
                   </div>
-                </motion.a>
+                </a>
               ))}
             </div>
 
-            {/* Embedded Map - Desktop Only */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.9, delay: 0.6 }}
-              className="hidden lg:block"
-            >
-              <p className="text-xs tracking-widest uppercase text-muted-foreground mb-4">
+            {/* Map on tablet+ */}
+            <div>
+              <p className="text-xs sm:text-sm tracking-widest uppercase text-muted-foreground mb-4">
                 Find My Studio
               </p>
-              <div className="w-full h-96 rounded-2xl overflow-hidden border border-border shadow-2xl">
+              <div className="w-full h-80 md:h-96 lg:h-[500px] xl:h-[540px] rounded-2xl overflow-hidden border border-border shadow-2xl">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d985.301299429467!2d38.6819033!3d9.0714483!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b884f824eede3%3A0x8ba8f15164975aa7!2s3MCJ%2BHQW%2C%20Burayu!5e0!3m2!1sen!2sus!4v1735680000000"
                   width="100%"
@@ -175,25 +143,34 @@ const Contact = () => {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Josy Photography Studio Location"
-                  className="grayscale hover:grayscale-0 transition-all duration-500"
+                  className="grayscale hover:grayscale-0 transition-all duration-700"
                 />
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          {/* Right: Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9, delay: 0.2 }}
-            className="order-1 lg:order-2"
-          >
-            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-8 md:p-10 shadow-xl">
-              <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Name & Email */}
-                <div className="grid sm:grid-cols-2 gap-6">
+          {/* Right: Form (always visible) */}
+          <div>
+            {/* Mobile Header */}
+            <div className="md:hidden text-center mb-10">
+              <p className="text-primary font-body text-xs tracking-[0.4em] uppercase mb-4">
+                Get In Touch
+              </p>
+              <h2 className="font-display text-4xl sm:text-5xl leading-tight mb-4">
+                Let's Create
+                <br />
+                <span className="italic text-primary">Together</span>
+              </h2>
+              <p className="text-base text-muted-foreground leading-relaxed max-w-lg mx-auto">
+                Ready to capture your story? Drop me a message!
+              </p>
+            </div>
+
+            <div className="bg-card/60 backdrop-blur-md border border-border rounded-2xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-2xl">
+              <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor="name" className="text-xs tracking-widest uppercase text-muted-foreground">
+                    <label htmlFor="name" className="text-xs sm:text-sm tracking-widest uppercase text-muted-foreground">
                       Your Name *
                     </label>
                     <input
@@ -202,11 +179,11 @@ const Contact = () => {
                       name="name"
                       required
                       placeholder="John Doe"
-                      className="w-full px-0 py-3 bg-transparent border-b border-border text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors"
+                      className="w-full px-0 py-3 bg-transparent border-b-2 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors text-base"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="email" className="text-xs tracking-widest uppercase text-muted-foreground">
+                    <label htmlFor="email" className="text-xs sm:text-sm tracking-widest uppercase text-muted-foreground">
                       Email Address *
                     </label>
                     <input
@@ -215,44 +192,33 @@ const Contact = () => {
                       name="email"
                       required
                       placeholder="john@example.com"
-                      className="w-full px-0 py-3 bg-transparent border-b border-border text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors"
+                      className="w-full px-0 py-3 bg-transparent border-b-2 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors text-base"
                     />
                   </div>
                 </div>
 
-                {/* Phone with Flag */}
                 <div className="space-y-2">
-                  <label htmlFor="phone" className="text-xs tracking-widest uppercase text-muted-foreground">
+                  <label htmlFor="phone" className="text-xs sm:text-sm tracking-widest uppercase text-muted-foreground">
                     Phone Number *
                   </label>
-                  <div className="flex items-center border-b border-border py-3 focus-within:border-primary transition-colors">
+                  <div className="flex items-center border-b-2 border-border py-3 focus-within:border-primary transition-colors">
                     <div className="flex items-center gap-3 pr-4 border-r border-border">
-                      <img
-                        src="https://flagcdn.com/w40/et.png"
-                        alt="Ethiopia flag"
-                        className="w-7 h-5 rounded shadow-sm"
-                      />
+                      <img src="https://flagcdn.com/w40/et.png" alt="Ethiopia" className="w-8 h-6 rounded shadow-sm" />
                       <span className="text-foreground font-medium">+251</span>
                     </div>
                     <input
                       type="tel"
-                      id="phone"
-                      name="phone"
                       required
                       placeholder="91 234 5678"
                       value={phoneInput}
-                      onChange={(e) => {
-                        const digits = e.target.value.replace(/\D/g, '').slice(0, 9);
-                        setPhoneInput(digits);
-                      }}
-                      className="w-full bg-transparent text-foreground placeholder:text-muted-foreground/50 focus:outline-none ml-4"
+                      onChange={(e) => setPhoneInput(e.target.value.replace(/\D/g, '').slice(0, 9))}
+                      className="w-full bg-transparent text-foreground placeholder:text-muted-foreground/50 focus:outline-none ml-4 text-base"
                     />
                   </div>
                 </div>
 
-                {/* Message */}
                 <div className="space-y-2">
-                  <label htmlFor="message" className="text-xs tracking-widest uppercase text-muted-foreground">
+                  <label htmlFor="message" className="text-xs sm:text-sm tracking-widest uppercase text-muted-foreground">
                     Your Message *
                   </label>
                   <textarea
@@ -260,40 +226,49 @@ const Contact = () => {
                     name="message"
                     rows={5}
                     required
-                    placeholder="Tell me about your shoot idea, date, location, or any special requests..."
-                    className="w-full px-0 py-3 bg-transparent border-b border-border text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors resize-none"
+                    placeholder="Tell me about your shoot idea, preferred dates, location..."
+                    className="w-full px-0 py-3 bg-transparent border-b-2 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none transition-colors resize-none text-base leading-relaxed"
                   />
                 </div>
 
-                {/* Submit Button */}
-                <motion.button
+                <button
                   type="submit"
                   disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full md:w-auto px-10 py-5 bg-primary text-primary-foreground font-medium text-sm tracking-wider uppercase rounded-full hover:bg-primary/90 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  className="w-full px-10 py-5 bg-primary text-primary-foreground font-medium text-sm sm:text-base tracking-widest uppercase rounded-full hover:bg-primary/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg"
                 >
-                  {isSubmitting ? (
-                    <>Sending Message...</>
-                  ) : (
-                    <>
-                      Send Message
-                      <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </motion.button>
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {!isSubmitting && <Send className="w-5 h-5" />}
+                </button>
               </form>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Mobile Map */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.8 }}
-          className="mt-20 lg:hidden"
-        >
+        {/* Mobile: Info + Map Below Form */}
+        <div className="mt-16 md:hidden">
+          <div className="space-y-8 mb-12 text-center">
+            {contactDetails.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="flex flex-col items-center gap-4 group"
+              >
+                <div className="w-14 h-14 rounded-full border border-border flex items-center justify-center group-hover:border-primary transition-colors">
+                  <item.icon className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs tracking-widest uppercase text-muted-foreground mb-1">
+                    {item.label}
+                  </p>
+                  <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                    {item.value}
+                  </p>
+                  {item.subtitle && <p className="text-sm text-muted-foreground mt-1">{item.subtitle}</p>}
+                </div>
+              </a>
+            ))}
+          </div>
+
           <p className="text-center text-xs tracking-widest uppercase text-muted-foreground mb-6">
             Studio Location
           </p>
@@ -307,13 +282,13 @@ const Contact = () => {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Josy Photography Studio"
-              className="grayscale hover:grayscale-0 transition-all duration-500"
+              className="grayscale hover:grayscale-0 transition-all duration-700"
             />
           </div>
           <p className="text-center text-sm text-muted-foreground mt-4">
             Josy Photography Studio · Burayu, Oromia, Ethiopia
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

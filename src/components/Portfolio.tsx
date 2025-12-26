@@ -180,99 +180,111 @@
 // };
 
 // export default Portfolio;
-import { motion, useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+
+export const GALLERY_CATEGORIES = [
+  'Wedding',
+  'Mels',
+  'Genfo',
+  'Bridal Shower',
+  'Maternity',
+  'Kids',
+  'Kiristina',
+  'Family',
+] as const;
 
 interface PortfolioItem {
-  id: number;
   title: string;
   link: string;
   image1: string;
-  image2: string;
+  image2: string | null;
 }
 
-const items: PortfolioItem[] = [
-  {
-    id: 1,
-    title: 'Wedding',
-    link: '/gallery/category/Wedding',
-    image1: 'https://i0.wp.com/thewplmag.com/wp-content/uploads/2024/04/KarimahGheddai0030.jpg?resize=900%2C660&ssl=1',
-    image2: 'https://jennygg.com/wp-content/uploads/2015/06/HJblog-1-940x627.jpg',
-  },
-  {
-    id: 2,
-    title: 'Mels',
-    link: '/gallery/category/Mels',
-    image1: 'https://www.judahavenue.com/wp-content/uploads/2018/07/27-49018-post/aida-betre-wedding-at-falls-church-marriott-fairview-park-in-virginia-1-1.jpg',
-    image2: 'https://lookaside.instagram.com/seo/google_widget/crawler/?media_id=3769406366629576457',
-  },
-  {
-    id: 3,
-    title: 'Genfo',
-    link: '/gallery/category/Genfo',
-    image1: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Ga%27at_food.jpg/1200px-Ga%27at_food.jpg',
-    image2: 'https://live-production.wcms.abc-cdn.net.au/7df5214cf7cdba9e04c6cd7b481dad1e?impolicy=wcms_crop_resize&cropH=914&cropW=1624&xPos=0&yPos=0&width=862&height=485',
-  },
-  {
-    id: 4,
-    title: 'Bridal Shower',
-    link: '/gallery/category/Bridal%20Shower',
-    image1: 'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=2140144899370059',
-    image2: 'https://i.ytimg.com/vi/Bs70Dn1p3D8/maxresdefault.jpg',
-  },
-  {
-    id: 5,
-    title: 'Maternity',
-    link: '/gallery/category/Maternity',
-    image1: 'https://images.squarespace-cdn.com/content/v1/52eeeae9e4b04af4cf9542bb/1560353053810-TVUOI383GT97WI04ZWRR/atlanta-roswell-acworth-sandy-springs-buckhead-virginia-highlands-west-end-decatur-lily-sophia-photography-ethiopian-couple-studio-couples-maternity-session-expecting-baby-boy-family-photos_1066.jpg',
-    image2: 'https://boyophoto.ca/wp-content/uploads/2018/07/001-ottawa-maternity-photographer-studio2.jpg',
-  },
-  {
-    id: 6,
-    title: 'Kids',
-    link: '/gallery/category/Kids',
-    image1: 'https://media.istockphoto.com/id/474443742/photo/beautiful-ethiopian-girl-smiling-during-a-party.jpg?s=612x612&w=0&k=20&c=5j7gRZ4exrckgxjEAjQi2hyRSLgodVKEJ1kP2W6HOCw=',
-    image2: 'https://media.istockphoto.com/id/640305394/photo/group-of-happy-african-children-east-africa.jpg?s=612x612&w=0&k=20&c=D3lN7ozC0wMnz6ZziPPML0w2i7sEBaB64TEPVaANWSY=',
-  },
-  {
-    id: 7,
-    title: 'Kiristina',
-    link: '/gallery/category/Kiristina',
-    image1: 'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=955753772785403',
-    image2: 'https://mir-s3-cdn-cf.behance.net/project_modules/max_632_webp/b883c013329837.562727bbb88bf.jpg',
-  },
-  {
-    id: 8,
-    title: 'Family',
-    link: '/gallery/category/Family',
-    image1: 'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=556466260600441',
-    image2: 'https://arpasiphotography.com/wp-content/uploads/2020/12/Mekonen_Abdi_family-39-1024x683.jpg',
-  },
+const fallbackImages = [
+  'https://anjelopictures.com/wp-content/uploads/2024/05/5M0A5845-scaled.jpg',
+  'https://anjelopictures.com/wp-content/uploads/2024/05/7U0A7220-1-scaled.jpg',
+  'https://anjelopictures.com/wp-content/uploads/2024/05/3D3A4168-scaled.jpg',
+  'https://anjelopictures.com/wp-content/uploads/2024/05/1D6A0924-scaled.jpg',
+  'https://anjelopictures.com/wp-content/uploads/2024/05/CY5A8127-1-scaled.jpg',
 ];
 
 const Portfolio = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
-  const [hoveredImage, setHoveredImage] = useState<string | null>(null);
+  const [items, setItems] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hoveredSide, setHoveredSide] = useState<'left' | 'right' | null>(null);
+
+  useEffect(() => {
+    const fetchPortfolioImages = async () => {
+      const portfolioItems: PortfolioItem[] = [];
+
+      for (const category of GALLERY_CATEGORIES) {
+        const { data, error } = await supabase
+          .from('galleries')
+          .select('cover_image')
+          .eq('is_public', true)
+          .eq('category', category)
+          .order('is_featured', { ascending: false })
+          .order('created_at', { ascending: false })
+          .limit(2);
+
+        let image1 = '';
+        let image2: string | null = null;
+
+        if (!error && data && data.length > 0) {
+          image1 = data[0].cover_image || fallbackImages[0];
+          if (data.length > 1 && data[1].cover_image) {
+            image2 = data[1].cover_image;
+          }
+        }
+
+        if (!image1) {
+          image1 = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+        }
+        if (!image2) {
+          image2 = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+        }
+
+        portfolioItems.push({
+          title: category,
+          link: `/gallery/category/${encodeURIComponent(category)}`,
+          image1,
+          image2,
+        });
+      }
+
+      setItems(portfolioItems);
+      setLoading(false);
+    };
+
+    fetchPortfolioImages();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="portfolio" className="py-24 lg:py-32 bg-background">
+        <div className="container mx-auto px-6 lg:px-12 text-center">
+          <div className="h-8 w-8 mx-auto animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="mt-4 text-muted-foreground">Loading galleries...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="portfolio" className="py-24 lg:py-32 bg-background" ref={ref}>
       <div className="container mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="mb-16 lg:mb-24 text-center"
-        >
+        <div className="mb-16 lg:mb-24 text-center">
           <p className="text-primary font-body text-sm tracking-[0.3em] uppercase mb-4">
             Our Galleries
           </p>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground">
             Explore Our Work
           </h2>
-        </motion.div>
+        </div>
 
         {/* Alternating Layout */}
         <div className="space-y-20 lg:space-y-32">
@@ -280,79 +292,84 @@ const Portfolio = () => {
             const isEven = index % 2 === 0;
 
             return (
-              <motion.article
-                key={item.id}
-                initial={{ opacity: 0, y: 60 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+              <article
+                key={item.title}
                 className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center"
+                onMouseLeave={() => setHoveredSide(null)} // Reset on leave
               >
                 {/* Images Section */}
                 <div className={isEven ? 'order-1' : 'order-1 md:order-2'}>
                   <a href={item.link} className="block">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-0 overflow-hidden shadow-2xl rounded-none">
-                      {/* First Image – Always visible */}
-                      <div className="relative overflow-hidden">
-                        <motion.img
+                      {/* Left Image */}
+                      <div
+                        className="relative overflow-hidden"
+                        onMouseEnter={() => setHoveredSide('left')}
+                      >
+                        <img
                           src={item.image1}
-                          alt={`${item.title} photography`}
-                          className="w-full h-[20rem] sm:h-[26rem] md:h-[28rem] lg:h-[32rem] object-cover"
-                          animate={{
-                            scale: hoveredImage === item.image1 ? 1.12 : 1,
-                          }}
-                          transition={{ duration: 0.7, ease: 'easeOut' }}
-                          onMouseEnter={() => setHoveredImage(item.image1)}
-                          onMouseLeave={() => setHoveredImage(null)}
+                          alt={`${item.title} photography - left`}
+                          className="w-full h-[20rem] sm:h-[26rem] md:h-[28rem] lg:h-[32rem] object-cover transition-transform duration-700 hover:scale-110"
                         />
-                        <motion.div
-                          className="absolute inset-0 bg-black/40 pointer-events-none"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: hoveredImage === item.image1 ? 1 : 0 }}
-                          transition={{ duration: 0.4 }}
+                        {/* Overlay appears when hovering RIGHT image */}
+                        <div
+                          className={`absolute inset-0 bg-black/40 pointer-events-none transition-opacity duration-500 ${
+                            hoveredSide === 'right' ? 'opacity-100' : 'opacity-0'
+                          }`}
                         />
                       </div>
 
-                      {/* Second Image – Hidden on sm, shown on md+ */}
-                      <div className="relative overflow-hidden hidden md:block">
-                        <motion.img
-                          src={item.image2}
-                          alt={`${item.title} photography`}
-                          className="w-full h-[20rem] sm:h-[26rem] md:h-[28rem] lg:h-[32rem] object-cover"
-                          animate={{
-                            scale: hoveredImage === item.image2 ? 1.12 : 1,
-                          }}
-                          transition={{ duration: 0.7, ease: 'easeOut' }}
-                          onMouseEnter={() => setHoveredImage(item.image2)}
-                          onMouseLeave={() => setHoveredImage(null)}
-                        />
-                        <motion.div
-                          className="absolute inset-0 bg-black/40 pointer-events-none"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: hoveredImage === item.image2 ? 1 : 0 }}
-                          transition={{ duration: 0.4 }}
-                        />
-                      </div>
+                      {/* Right Image - Hidden on mobile */}
+                      {item.image2 && (
+                        <div
+                          className="relative overflow-hidden hidden md:block"
+                          onMouseEnter={() => setHoveredSide('right')}
+                        >
+                          <img
+                            src={item.image2}
+                            alt={`${item.title} photography - right`}
+                            className="w-full h-[20rem] sm:h-[26rem] md:h-[28rem] lg:h-[32rem] object-cover transition-transform duration-700 hover:scale-110"
+                          />
+                          {/* Overlay appears when hovering LEFT image */}
+                          <div
+                            className={`absolute inset-0 bg-black/40 pointer-events-none transition-opacity duration-500 ${
+                              hoveredSide === 'left' ? 'opacity-100' : 'opacity-0'
+                            }`}
+                          />
+                        </div>
+                      )}
                     </div>
                   </a>
                 </div>
 
                 {/* Text Section */}
-                <div className={`${isEven ? 'order-2' : 'order-2 md:order-1'} text-center md:text-left`}>
-                  <motion.h3
-                    className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-foreground mb-6"
-                    onMouseEnter={() => setHoveredImage(null)}
-                  >
+                {/* <div className={`${isEven ? 'order-2' : 'order-2 md:order-1'} text-center md:text-left`}>
+                  <h3 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-foreground mb-6">
                     {item.title}
-                  </motion.h3>
-                  <motion.a
+                  </h3>
+                  <a
                     href={item.link}
                     className="inline-flex items-center gap-3 font-body text-lg tracking-wide text-primary hover:text-primary/80 transition-colors"
                   >
                     View Gallery
                     <ArrowUpRight className="w-5 h-5" />
-                  </motion.a>
+                  </a>
+                </div> */}
+
+                {/* Title */}
+                <div className={`${isEven ? 'order-2' : 'order-2 lg:order-1'} text-center lg:text-left`}>
+                  <h3 className="font-display text-5xl  md:text-6xl lg:text-8xl xl:text-8xl leading-none text-foreground mb-8">
+                    {item.title}
+                  </h3>
+                  <a
+                    href={item.link}
+                    className="inline-flex items-center gap-4 font-body text-lg lg:text-xl tracking-widest text-primary hover:text-primary/70 transition-colors duration-500 group"
+                  >
+                    View Gallery
+                    <ArrowUpRight className="w-6 h-6 transition-transform duration-500 group-hover:translate-x-2 group-hover:-translate-y-1" />
+                  </a>
                 </div>
-              </motion.article>
+              </article>
             );
           })}
         </div>

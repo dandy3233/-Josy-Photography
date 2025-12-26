@@ -75,7 +75,7 @@ const Index = () => {
         <Portfolio />
         <About aboutImage={aboutImage} />
         <PopularWorks />
-        <Services />
+        {/* <Services /> */}
         <Testimonials />
         <Contact />
       </main>
